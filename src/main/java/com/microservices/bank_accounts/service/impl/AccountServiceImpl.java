@@ -1,14 +1,23 @@
 package com.microservices.bank_accounts.service.impl;
 
+import com.microservices.bank_accounts.constants.AccountConstants;
 import com.microservices.bank_accounts.dto.CustomerDto;
+import com.microservices.bank_accounts.entity.AccountEntity;
 import com.microservices.bank_accounts.entity.CustomerEntity;
+import com.microservices.bank_accounts.exception.CustomerAlreadyExistsException;
 import com.microservices.bank_accounts.mapper.CustomerMapper;
 import com.microservices.bank_accounts.repository.AccountRepository;
 import com.microservices.bank_accounts.repository.CustomerRepository;
 import com.microservices.bank_accounts.service.IAccountService;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.Random;
 
 @AllArgsConstructor
+@Service
 public class AccountServiceImpl implements IAccountService {
 
     private CustomerRepository customerRepository;
@@ -19,9 +28,32 @@ public class AccountServiceImpl implements IAccountService {
      */
     @Override
     public void createAccount(CustomerDto customerDto) {
+        Optional<CustomerEntity> existingCustomer = customerRepository.findByMobileNumber(customerDto.getMobileNumber());
+
+        if(existingCustomer.isPresent()){
+            throw new CustomerAlreadyExistsException(String.format("Customer already registered with given mobileNumber", customerDto.getMobileNumber()));
+        }
+
+
         CustomerEntity customerEntity = CustomerMapper.mapToCustomerEntity(customerDto);
+        customerEntity.setCreatedAt(LocalDateTime.now());
+        customerEntity.setCreatedBy("Anonymous");
         CustomerEntity savedCustomer = customerRepository.save(customerEntity);
 
+        accountRepository.save(createNewAccount(savedCustomer));
+    }
 
+    private AccountEntity createNewAccount(CustomerEntity customer){
+        AccountEntity account = new AccountEntity();
+
+        long account_number = 1000000000L + new Random().nextLong(900000000);
+        account.setNumber(account_number);
+        account.setType(AccountConstants.SAVINGS);
+        account.setBranchAddress(AccountConstants.ADDRESS);
+        account.setCustomerId(customer.getId());
+        account.setCreatedAt(LocalDateTime.now());
+        account.setCreatedBy("Anonymous");
+
+        return account;
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping(path="/api/account", produces = {MediaType.APPLICATION_JSON_VALUE} )
+@RequestMapping(path="/api/accounts", produces = {MediaType.APPLICATION_JSON_VALUE} )
 public class AccountsController {
 
     private IAccountService accountService;
