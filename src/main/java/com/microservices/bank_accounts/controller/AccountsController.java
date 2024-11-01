@@ -37,9 +37,23 @@ public class AccountsController {
 
     @PutMapping(path = "/update")
     public ResponseEntity<CustomerDto> updateAccount(@RequestBody CustomerDto customerDto){
-        System.out.println("request came here");
         CustomerDto updatedCustomerDto = accountService.updateAccount(customerDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(updatedCustomerDto);
+    }
+
+    @DeleteMapping(path = "/delete")
+    public ResponseEntity<ResponseDto> deleteAccount(@RequestParam String mobileNumber){
+        boolean isTrue = accountService.deleteAccount(mobileNumber);
+
+        if(isTrue){
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDto(AccountConstants.STATUS_200, AccountConstants.MESSAGE_200));
+        }else{
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDto(AccountConstants.STATUS_500, AccountConstants.MESSAGE_500));
+        }
     }
 }
