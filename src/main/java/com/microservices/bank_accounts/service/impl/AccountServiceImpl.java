@@ -1,10 +1,13 @@
 package com.microservices.bank_accounts.service.impl;
 
 import com.microservices.bank_accounts.constants.AccountConstants;
+import com.microservices.bank_accounts.dto.AccountDto;
 import com.microservices.bank_accounts.dto.CustomerDto;
 import com.microservices.bank_accounts.entity.AccountEntity;
 import com.microservices.bank_accounts.entity.CustomerEntity;
 import com.microservices.bank_accounts.exception.CustomerAlreadyExistsException;
+import com.microservices.bank_accounts.exception.ResourceNotFoundException;
+import com.microservices.bank_accounts.mapper.AccountMapper;
 import com.microservices.bank_accounts.mapper.CustomerMapper;
 import com.microservices.bank_accounts.repository.AccountRepository;
 import com.microservices.bank_accounts.repository.CustomerRepository;
@@ -13,8 +16,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -56,4 +61,18 @@ public class AccountServiceImpl implements IAccountService {
 
         return account;
     }
+
+
+    public CustomerDto getAccountDetails(String mobileNumber){
+        CustomerEntity customer = customerRepository.findByMobileNumber(mobileNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("customer", "mobileNumber", mobileNumber));
+        CustomerDto customerDto = CustomerMapper.mapToCustomerDto(customer);
+
+        List<AccountEntity> accounts = accountRepository.findByCustomerId(customer.getId());
+        List<AccountDto> accountDtos = accounts.stream().map(AccountMapper::mapToAccountDto).toList();
+
+        customerDto.setAccounts(accountDtos);
+
+        return customerDto;
+    };;
 }
