@@ -4,8 +4,7 @@ import com.microservices.bank_accounts.dto.AccountDto;
 import com.microservices.bank_accounts.entity.AccountEntity;
 
 public class AccountMapper {
-    public static AccountDto mapToAccountDto(AccountEntity accEntity){
-        AccountDto accDto = new AccountDto();
+    public static AccountDto mapAccountEntityToAccountDto(AccountEntity accEntity, AccountDto accDto){
         accDto.setAccountNumber(accEntity.getNumber());
         accDto.setAccountType(accEntity.getType());
         accDto.setBranchAddress(accEntity.getBranchAddress());
@@ -13,8 +12,7 @@ public class AccountMapper {
         return accDto;
     }
 
-    public static AccountEntity mapToAccountEntity(AccountDto accDto){
-        AccountEntity accEntity = new AccountEntity();
+    public static AccountEntity mapToAccountEntity(AccountDto accDto, AccountEntity accEntity){
         accEntity.setNumber(accDto.getAccountNumber());
         accEntity.setType(accDto.getAccountType());
         accEntity.setBranchAddress(accDto.getBranchAddress());

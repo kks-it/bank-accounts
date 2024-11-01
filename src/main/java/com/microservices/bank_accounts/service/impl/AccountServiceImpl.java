@@ -39,8 +39,8 @@ public class AccountServiceImpl implements IAccountService {
             throw new CustomerAlreadyExistsException(String.format("Customer already registered with given mobileNumber", customerDto.getMobileNumber()));
         }
 
-
-        CustomerEntity customerEntity = CustomerMapper.mapToCustomerEntity(customerDto);
+        CustomerEntity customerEntity = new CustomerEntity();
+        CustomerMapper.mapCustomerDtoToCustomerEntity(customerDto, customerEntity);
         customerEntity.setCreatedAt(LocalDateTime.now());
         customerEntity.setCreatedBy("Anonymous");
         CustomerEntity savedCustomer = customerRepository.save(customerEntity);
@@ -66,11 +66,14 @@ public class AccountServiceImpl implements IAccountService {
     public CustomerDto getAccountDetails(String mobileNumber){
         CustomerEntity customer = customerRepository.findByMobileNumber(mobileNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("customer", "mobileNumber", mobileNumber));
-        CustomerDto customerDto = CustomerMapper.mapToCustomerDto(customer);
+        CustomerDto customerDto = new CustomerDto();
+        CustomerMapper.mapCustomerEntityToCustomerDto(customer, customerDto);
 
        AccountEntity account = accountRepository.findByCustomerId(customer.getId())
                .orElseThrow(() -> new ResourceNotFoundException("account", "customer id", customer.getId().toString()));
-        AccountDto accountDto = AccountMapper.mapToAccountDto(account);
+
+       AccountDto accountDto = new AccountDto();
+       AccountMapper.mapAccountEntityToAccountDto(account, accountDto);
 
         customerDto.setAccounts(accountDto);
 
