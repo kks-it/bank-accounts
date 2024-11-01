@@ -68,10 +68,11 @@ public class AccountServiceImpl implements IAccountService {
                 .orElseThrow(() -> new ResourceNotFoundException("customer", "mobileNumber", mobileNumber));
         CustomerDto customerDto = CustomerMapper.mapToCustomerDto(customer);
 
-        List<AccountEntity> accounts = accountRepository.findByCustomerId(customer.getId());
-        List<AccountDto> accountDtos = accounts.stream().map(AccountMapper::mapToAccountDto).toList();
+       AccountEntity account = accountRepository.findByCustomerId(customer.getId())
+               .orElseThrow(() -> new ResourceNotFoundException("account", "customer id", customer.getId().toString()));
+        AccountDto accountDto = AccountMapper.mapToAccountDto(account);
 
-        customerDto.setAccounts(accountDtos);
+        customerDto.setAccounts(accountDto);
 
         return customerDto;
     };;
