@@ -12,7 +12,7 @@ public class AccountMapper {
         return accDto;
     }
 
-    public static AccountEntity mapToAccountEntity(AccountDto accDto, AccountEntity accEntity){
+    public static AccountEntity mapAccountDtoToAccountEntity(AccountDto accDto, AccountEntity accEntity){
         accEntity.setNumber(accDto.getAccountNumber());
         accEntity.setType(accDto.getAccountType());
         accEntity.setBranchAddress(accDto.getBranchAddress());

@@ -34,4 +34,12 @@ public class AccountsController {
                 .status(HttpStatus.OK)
                 .body(customerAccountDetails);
     }
+
+    @PutMapping(path = "/update")
+    public ResponseEntity<CustomerDto> updateAccount(@RequestBody CustomerDto customerDto){
+        System.out.println("request came here");
+        CustomerDto updatedCustomerDto = accountService.updateAccount(customerDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(updatedCustomerDto);
+    }
 }

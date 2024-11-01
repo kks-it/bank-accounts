@@ -10,4 +10,5 @@ public interface IAccountService {
 
     CustomerDto getAccountDetails(String mobileNumber);
 
+    CustomerDto updateAccount(CustomerDto customerDto);
 }
