@@ -15,11 +15,8 @@ import com.microservices.bank_accounts.service.IAccountService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -41,8 +38,6 @@ public class AccountServiceImpl implements IAccountService {
 
         CustomerEntity customerEntity = new CustomerEntity();
         CustomerMapper.mapCustomerDtoToCustomerEntity(customerDto, customerEntity);
-        customerEntity.setCreatedAt(LocalDateTime.now());
-        customerEntity.setCreatedBy("Anonymous");
         CustomerEntity savedCustomer = customerRepository.save(customerEntity);
 
         accountRepository.save(createNewAccount(savedCustomer));
@@ -56,9 +51,6 @@ public class AccountServiceImpl implements IAccountService {
         account.setType(AccountConstants.SAVINGS);
         account.setBranchAddress(AccountConstants.ADDRESS);
         account.setCustomerId(customer.getId());
-        account.setCreatedAt(LocalDateTime.now());
-        account.setCreatedBy("Anonymous");
-
         return account;
     }
 
